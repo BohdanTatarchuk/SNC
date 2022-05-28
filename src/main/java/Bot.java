@@ -1,7 +1,12 @@
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bot extends TelegramLongPollingBot {
 
@@ -39,11 +44,17 @@ public class Bot extends TelegramLongPollingBot {
                     Для начала выбери язык:""";
             final String instruction = "Здесь самая актуальная информация о TON. Ниже список доступных инструкций.";
 
-            switch (text) {
+                switch (text) {
                 case "/start" -> {
                     message.setText(start);
                     try {
-                        execute(message);
+                        execute(
+                                SendMessage.builder()
+                                        .text(start)
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(getMessagesButtons())
+                                        .build()
+                        );
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
@@ -75,4 +86,29 @@ public class Bot extends TelegramLongPollingBot {
             }
         }
     }
+
+    //buttons language
+    private InlineKeyboardMarkup getMessagesButtons(){
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton ukr = new InlineKeyboardButton();
+        ukr.setText("Українська\uD83C\uDDFA\uD83C\uDDE6");
+        InlineKeyboardButton ru = new InlineKeyboardButton();
+        ru.setText("Русский\uD83C\uDDF7\uD83C\uDDFA");
+        //callback data
+        ukr.setCallbackData("ukr");
+        ru.setCallbackData("ru");
+        //list of buttons
+        List<InlineKeyboardButton> buttonList = new ArrayList<>();
+        buttonList.add(ukr);
+        buttonList.add(ru);
+        //list of lists of buttons
+        List< List<InlineKeyboardButton>> buttons = new ArrayList<>();
+        buttons.add(buttonList);
+        //inline keyboard markup
+        inlineKeyboardMarkup.setKeyboard(buttons);
+
+        return inlineKeyboardMarkup;
+    }
+
+    //buttons main menu
 }
