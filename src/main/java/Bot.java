@@ -154,7 +154,7 @@ public class Bot extends TelegramLongPollingBot {
 
         InlineKeyboardButton tgChannel = new InlineKeyboardButton();
         tgChannel.setText("Канал SNC\uD83D\uDC7E");
-        String link = "t.me.spacenoodles";
+        String link = "https://t.me/+m8CAHPeMkKowMzBi";
         tgChannel.setUrl(link);
 
         InlineKeyboardButton referalLink = new InlineKeyboardButton();
