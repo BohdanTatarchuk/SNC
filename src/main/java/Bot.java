@@ -12,14 +12,15 @@ import java.util.List;
 public class Bot extends TelegramLongPollingBot {
 
     final String about = """
-                    Space Noodles Corporations - это NFT — коллекция на блокчейне TON, которая позволяет каждому обзавестись уникальным космическим кораблём и стать частью уникального комьюнити. Выбирайте любой из 555 отрисованных вручную токенов Вселенной SNC.
+            Space Noodles Corporations - это NFT — коллекция на блокчейне TON, которая позволяет каждому обзавестись уникальным космическим кораблём и стать частью уникального комьюнити. Выбирайте любой из 555 отрисованных вручную токенов Вселенной SNC.
 
-                    Помимо самого токена и возможности его перепродажи на вторичном рынке, вы получаете внушительный набор Плюшек. Подробнее на нашем сайте \uD83D\uDC7E""";
+            Помимо самого токена и возможности его перепродажи на вторичном рынке, вы получаете внушительный набор Плюшек. Подробнее на нашем сайте \uD83D\uDC7E""";
     final String start = " Привет! Ты в боте APEX 1.0.\uD83D\uDC7E\s";
     final String language = "Выбери язык:";
     final String instruction = "Здесь самая актуальная информация о TON. Ниже список доступных инструкций.";
     final String menu = "Ты в главном меню \uD83C\uDF9B";
 
+    SendMessage message = new SendMessage();
 
     @Override
     public String getBotUsername() {
@@ -33,19 +34,46 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        CallbackQuery callbackQuery;
+        String answer = "";
+        if(update.hasCallbackQuery()){
+            callbackQuery = update.getCallbackQuery();
+            answer = update.getCallbackQuery().getData();
+            System.out.println("Callback: ");
+        }
+        if(answer.equals("ru")){
+            try {
+                execute(
+                        SendMessage.builder()
+                                .text(menu)
+                                .chatId(message.getChatId())
+                                .replyMarkup(getMainMenuButtons())
+                                .build()
+                );
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        } else if(answer.equals("ua")){
+            message.setText("Ukrainian menu");
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (update.hasMessage() && update.getMessage().hasText()) {
-            //creating obligatory fields
-            SendMessage message = new SendMessage();
+            //creating obligatory field
             message.setChatId(update.getMessage().getChatId().toString());
             message.setText(update.getMessage().getText());
             String text = update.getMessage().getText();
 
             //check
-            System.out.println(update.getMessage().getText());
-            System.out.println(update.getMessage().getChatId().toString());
+            System.out.println("User message: " + text);
+            System.out.println("Chat id: " + message.getChatId());
 
             //default commands
-                switch (text) {
+            switch (text) {
                 case "/start" -> {
                     try {
                         message.setText(start);
@@ -62,18 +90,18 @@ public class Bot extends TelegramLongPollingBot {
                     }
                 }
                 case "/menu" -> {
-                        try {
-                            execute(
-                                    SendMessage.builder()
-                                            .text(menu)
-                                            .chatId(message.getChatId())
-                                            .replyMarkup(getMainMenuButtons())
-                                            .build()
-                            );
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                    try {
+                        execute(
+                                SendMessage.builder()
+                                        .text(menu)
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(getMainMenuButtons())
+                                        .build()
+                        );
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
                     }
+                }
                 case "/referal" -> {
                     message.setText("*link*");
                     try {
@@ -113,7 +141,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     //buttons language
-    private InlineKeyboardMarkup getLanguageButtons(){
+    private InlineKeyboardMarkup getLanguageButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton ukr = new InlineKeyboardButton();
@@ -123,7 +151,7 @@ public class Bot extends TelegramLongPollingBot {
         ru.setText("Русский\uD83C\uDDF7\uD83C\uDDFA");
 
         //callback data
-        ukr.setCallbackData("ukr");
+        ukr.setCallbackData("ua");
         ru.setCallbackData("ru");
 
         //lists of buttons
@@ -133,7 +161,7 @@ public class Bot extends TelegramLongPollingBot {
         row2.add(ru);
 
         //list of lists of buttons
-        List< List<InlineKeyboardButton>> buttons = new ArrayList<>();
+        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         buttons.add(row1);
         buttons.add(row2);
 
@@ -143,7 +171,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     //buttons main menu
-    private InlineKeyboardMarkup getMainMenuButtons(){
+    private InlineKeyboardMarkup getMainMenuButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton instructions = new InlineKeyboardButton();
@@ -176,7 +204,7 @@ public class Bot extends TelegramLongPollingBot {
         row2.add(referalLink);
 
         //list of lists of buttons
-        List< List<InlineKeyboardButton>> buttons = new ArrayList<>();
+        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         buttons.add(row1);
         buttons.add(row2);
 
@@ -186,7 +214,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     //buttons about buttons
-    private InlineKeyboardMarkup getAboutButtons(){
+    private InlineKeyboardMarkup getAboutButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton back = new InlineKeyboardButton();
@@ -213,7 +241,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     //buttons instruction
-    private InlineKeyboardMarkup getInstructionButton(){
+    private InlineKeyboardMarkup getInstructionButton() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton back = new InlineKeyboardButton();
@@ -265,3 +293,4 @@ public class Bot extends TelegramLongPollingBot {
         return inlineKeyboardMarkup;
     }
 }
+
