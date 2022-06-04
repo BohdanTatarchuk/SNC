@@ -39,12 +39,12 @@ public class Bot extends TelegramLongPollingBot {
             System.out.println("Callback: " + answer);
 
             //buttons actions
-            /*byte choice = 0;
+            byte choice = 0;
             if (answer.equals("ru")) {
                 choice = 2;
             } else if (answer.equals("ua")) {
                 choice = 1;
-            }*/
+            }
             switch (answer) {
                 case "ru", "back" -> {
                     try {
@@ -73,7 +73,7 @@ public class Bot extends TelegramLongPollingBot {
                     }
                 }
             }
-            /*if (choice == 1) {
+            if (choice == 1) {
                 switch (answer) {
                     case "about" -> {
                         try {
@@ -131,79 +131,79 @@ public class Bot extends TelegramLongPollingBot {
                         }
                     }
                 }
-            }*/
+            }
 
-            if (update.hasMessage() && update.getMessage().hasText()) {
-                //creating obligatory field
-                message.setChatId(update.getMessage().getChatId().toString());
-                message.setText(update.getMessage().getText());
-                String text = update.getMessage().getText();
-                System.out.println("User message: " + text);
-                System.out.println("Chat id: " + message.getChatId());
+        }
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            //creating obligatory field
+            message.setChatId(update.getMessage().getChatId().toString());
+            message.setText(update.getMessage().getText());
+            String text = update.getMessage().getText();
+            System.out.println("User message: " + text);
+            System.out.println("Chat id: " + message.getChatId());
 
-                //default commands
-                switch (text) {
-                    case "/start" -> {
-                        try {
-                            message.setText(ru.getStart());
-                            execute(message);
-                            execute(
-                                    SendMessage.builder()
-                                            .text(ru.getLanguage())
-                                            .chatId(message.getChatId())
-                                            .replyMarkup(getLanguageButtons())
-                                            .build()
-                            );
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+            //default commands
+            switch (text) {
+                case "/start" -> {
+                    try {
+                        message.setText(ru.getStart());
+                        execute(message);
+                        execute(
+                                SendMessage.builder()
+                                        .text(ru.getLanguage())
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(getLanguageButtons())
+                                        .build()
+                        );
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
                     }
-                    case "/menu" -> {
-                        try {
-                            execute(
-                                    SendMessage.builder()
-                                            .text(ru.getMenu())
-                                            .chatId(message.getChatId())
-                                            .replyMarkup(ru.getMainMenuButtons())
-                                            .build()
-                            );
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                }
+                case "/menu" -> {
+                    try {
+                        execute(
+                                SendMessage.builder()
+                                        .text(ru.getMenu())
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(ru.getMainMenuButtons())
+                                        .build()
+                        );
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
                     }
-                    case "/referal" -> {
-                        message.setText("*link*");
-                        try {
-                            execute(message);
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                }
+                case "/referal" -> {
+                    message.setText("*link*");
+                    try {
+                        execute(message);
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
                     }
-                    case "/about" -> {
-                        try {
-                            execute(
-                                    SendMessage.builder()
-                                            .text(ru.getAbout())
-                                            .chatId(message.getChatId())
-                                            .replyMarkup(ru.getAboutButtons())
-                                            .build()
-                            );
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                }
+                case "/about" -> {
+                    try {
+                        execute(
+                                SendMessage.builder()
+                                        .text(ru.getAbout())
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(ru.getAboutButtons())
+                                        .build()
+                        );
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
                     }
-                    case "/instruction" -> {
-                        try {
-                            execute(
-                                    SendMessage.builder()
-                                            .text(ru.getInstruction())
-                                            .chatId(message.getChatId())
-                                            .replyMarkup(ru.getInstructionButton())
-                                            .build()
-                            );
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                }
+                case "/instruction" -> {
+                    try {
+                        execute(
+                                SendMessage.builder()
+                                        .text(ru.getInstruction())
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(ru.getInstructionButton())
+                                        .build()
+                        );
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
                     }
                 }
             }
