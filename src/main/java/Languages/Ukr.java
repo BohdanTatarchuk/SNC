@@ -1,3 +1,5 @@
+package Languages;
+
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -12,7 +14,7 @@ public class Ukr {
     private final String instruction = "Тут найактуальніша інформація про TON. Нижче перелік доступних інструкцій.";
 
     //buttons main menu
-    InlineKeyboardMarkup getMainMenuButtons() {
+    public InlineKeyboardMarkup getMainMenuButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton instructions = new InlineKeyboardButton();
@@ -30,9 +32,8 @@ public class Ukr {
         referalLink.setText("Рефер.Посилання");
 
         //callback data
-        instructions.setCallbackData("instructions");
-        tgChannel.setCallbackData("channel");
-        aboutProject.setCallbackData("about");
+        instructions.setCallbackData("UAinstructions");
+        aboutProject.setCallbackData("UAabout");
         referalLink.setCallbackData("referal");
 
         //lists of buttons
@@ -55,12 +56,12 @@ public class Ukr {
     }
 
     //buttons about buttons
-    InlineKeyboardMarkup getAboutButtons() {
+    public InlineKeyboardMarkup getAboutButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton back = new InlineKeyboardButton();
         back.setText("Назад");
-        back.setCallbackData("back");
+        back.setCallbackData("UAback");
 
         InlineKeyboardButton website = new InlineKeyboardButton();
         website.setCallbackData("website");
@@ -82,34 +83,30 @@ public class Ukr {
     }
 
     //buttons instruction
-    InlineKeyboardMarkup getInstructionButton() {
+    public InlineKeyboardMarkup getInstructionButton() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton back = new InlineKeyboardButton();
         back.setText("Назад");
-        back.setCallbackData("back");
+        back.setCallbackData("UAback");
 
         InlineKeyboardButton nft = new InlineKeyboardButton();
         nft.setText("Лікнеп по NFT");
-        nft.setCallbackData("nft");
         String linkNFT = "https://telegra.ph/Likbez-po-NFT-05-26";
         nft.setUrl(linkNFT);
 
         InlineKeyboardButton wallet = new InlineKeyboardButton();
         wallet.setText("Гаманець TON");
-        wallet.setCallbackData("wallet");
         String linkWallet = "https://telegra.ph/Koshelek-TON-05-26";
         wallet.setUrl(linkWallet);
 
         InlineKeyboardButton termin = new InlineKeyboardButton();
         termin.setText("Термінологія");
-        termin.setCallbackData("termin");
         String linkTermin = "https://telegra.ph/Terminologiya-05-26";
         termin.setUrl(linkTermin);
 
         InlineKeyboardButton safety = new InlineKeyboardButton();
         safety.setText("Безпека");
-        safety.setCallbackData("safety");
         String linkSafety = "https://telegra.ph/Bezopasnost-05-26-2";
         safety.setUrl(linkSafety);
 
@@ -146,5 +143,4 @@ public class Ukr {
     public String getAbout() {
         return about;
     }
-
 }

@@ -1,3 +1,5 @@
+import Languages.Ru;
+import Languages.Ukr;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -7,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Bot extends TelegramLongPollingBot {
@@ -15,6 +18,7 @@ public class Bot extends TelegramLongPollingBot {
     SendMessage message = new SendMessage();
     Ukr ukr = new Ukr();
     Ru ru = new Ru();
+    LinkedList<String> linkedList = new LinkedList<>();
 
     @Override
     public String getBotUsername() {
@@ -26,27 +30,26 @@ public class Bot extends TelegramLongPollingBot {
         return botToken;
     }
 
+
     @Override
     public void onUpdateReceived(Update update) {
         CallbackQuery callbackQuery;
         String answer;
-        System.out.println("Update method is working");
 
         //looking for callback
         if (update.hasCallbackQuery()) {
             callbackQuery = update.getCallbackQuery();
             answer = callbackQuery.getData();
-            System.out.println("Callback: " + answer);
+            linkedList.add(answer);
+            System.out.println("CallbackQuery: " + callbackQuery);
+            System.out.println("============================================");
 
             //buttons actions
-            byte choice = 0;
-            if (answer.equals("ru")) {
-                choice = 2;
-            } else if (answer.equals("ua")) {
-                choice = 1;
-            }
-            switch (answer) {
-                case "ru", "back" -> {
+            switch (linkedList.getLast()) {
+                //russian language
+                case "ru", "RUback" -> {
+                    linkedList.removeFirst();
+                    System.out.println("List: " + linkedList);
                     try {
                         execute(
                                 SendMessage.builder()
@@ -59,7 +62,37 @@ public class Bot extends TelegramLongPollingBot {
                         e.printStackTrace();
                     }
                 }
-                case "ua" -> {
+                case "RUabout" -> {
+                    linkedList.removeFirst();
+                    try {
+                        execute(
+                                SendMessage.builder()
+                                        .text(ru.getAbout())
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(ru.getAboutButtons())
+                                        .build()
+                        );
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case "RUinstructions" -> {
+                    linkedList.removeFirst();
+                    try {
+                        execute(
+                                SendMessage.builder()
+                                        .text(ru.getInstruction())
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(ru.getInstructionButton())
+                                        .build()
+                        );
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                }
+                //ukrainian language
+                case "ua", "UAback" -> {
+                    linkedList.removeFirst();;
                     try {
                         execute(
                                 SendMessage.builder()
@@ -72,67 +105,35 @@ public class Bot extends TelegramLongPollingBot {
                         e.printStackTrace();
                     }
                 }
-            }
-            if (choice == 1) {
-                switch (answer) {
-                    case "about" -> {
-                        try {
-                            execute(
-                                    SendMessage.builder()
-                                            .text(ukr.getAbout())
-                                            .chatId(message.getChatId())
-                                            .replyMarkup(ukr.getAboutButtons())
-                                            .build()
-                            );
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    case "instructions" -> {
-                        try {
-                            execute(
-                                    SendMessage.builder()
-                                            .text(ukr.getInstruction())
-                                            .chatId(message.getChatId())
-                                            .replyMarkup(ukr.getInstructionButton())
-                                            .build()
-                            );
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                case "UAabout" -> {
+                    try {
+                        linkedList.removeFirst();
+                        execute(
+                                SendMessage.builder()
+                                        .text(ukr.getAbout())
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(ukr.getAboutButtons())
+                                        .build()
+                        );
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
                     }
                 }
-            } else if (choice == 2) {
-                switch (answer) {
-                    case "about" -> {
-                        try {
-                            execute(
-                                    SendMessage.builder()
-                                            .text(ru.getAbout())
-                                            .chatId(message.getChatId())
-                                            .replyMarkup(ru.getAboutButtons())
-                                            .build()
-                            );
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    case "instructions" -> {
-                        try {
-                            execute(
-                                    SendMessage.builder()
-                                            .text(ru.getInstruction())
-                                            .chatId(message.getChatId())
-                                            .replyMarkup(ru.getInstructionButton())
-                                            .build()
-                            );
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                case "UAinstructions" -> {
+                    linkedList.removeFirst();
+                    try {
+                        execute(
+                                SendMessage.builder()
+                                        .text(ukr.getInstruction())
+                                        .chatId(message.getChatId())
+                                        .replyMarkup(ukr.getInstructionButton())
+                                        .build()
+                        );
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
                     }
                 }
             }
-
         }
         if (update.hasMessage() && update.getMessage().hasText()) {
             //creating obligatory field
@@ -141,6 +142,7 @@ public class Bot extends TelegramLongPollingBot {
             String text = update.getMessage().getText();
             System.out.println("User message: " + text);
             System.out.println("Chat id: " + message.getChatId());
+            System.out.println("============================================");
 
             //default commands
             switch (text) {
@@ -240,4 +242,5 @@ public class Bot extends TelegramLongPollingBot {
         return inlineKeyboardMarkup;
     }
 }
+
 

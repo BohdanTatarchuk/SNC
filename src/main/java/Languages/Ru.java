@@ -1,3 +1,5 @@
+package Languages;
+
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -15,7 +17,7 @@ public class Ru {
     private final String instruction = "Здесь самая актуальная информация о TON. Ниже список доступных инструкций.";
 
     //buttons main menu
-    InlineKeyboardMarkup getMainMenuButtons() {
+    public InlineKeyboardMarkup getMainMenuButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton instructions = new InlineKeyboardButton();
@@ -33,9 +35,8 @@ public class Ru {
         referalLink.setText("Рефер.Ссылка🔗");
 
         //callback data
-        instructions.setCallbackData("instructions");
-        tgChannel.setCallbackData("channel");
-        aboutProject.setCallbackData("channel");
+        instructions.setCallbackData("RUinstructions");
+        aboutProject.setCallbackData("RUabout");
         referalLink.setCallbackData("referal");
 
         //lists of buttons
@@ -58,15 +59,14 @@ public class Ru {
     }
 
     //buttons about buttons
-    InlineKeyboardMarkup getAboutButtons() {
+    public InlineKeyboardMarkup getAboutButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton back = new InlineKeyboardButton();
         back.setText("Назад");
-        back.setCallbackData("back");
+        back.setCallbackData("RUback");
 
         InlineKeyboardButton website = new InlineKeyboardButton();
-        website.setCallbackData("website");
         String link = "https://spacenoodles.ru";
         website.setUrl(link);
         website.setText("Наш сайт");
@@ -85,34 +85,30 @@ public class Ru {
     }
 
     //buttons instruction
-    InlineKeyboardMarkup getInstructionButton() {
+    public InlineKeyboardMarkup getInstructionButton() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton back = new InlineKeyboardButton();
         back.setText("Назад");
-        back.setCallbackData("back");
+        back.setCallbackData("RUback");
 
         InlineKeyboardButton nft = new InlineKeyboardButton();
         nft.setText("Ликбез по NFT");
-        nft.setCallbackData("nft");
         String linkNFT = "https://telegra.ph/Likbez-po-NFT-05-26";
         nft.setUrl(linkNFT);
 
         InlineKeyboardButton wallet = new InlineKeyboardButton();
         wallet.setText("Кошелек TON");
-        wallet.setCallbackData("wallet");
         String linkWallet = "https://telegra.ph/Koshelek-TON-05-26";
         wallet.setUrl(linkWallet);
 
         InlineKeyboardButton termin = new InlineKeyboardButton();
         termin.setText("Терминология");
-        termin.setCallbackData("termin");
         String linkTermin = "https://telegra.ph/Terminologiya-05-26";
         termin.setUrl(linkTermin);
 
         InlineKeyboardButton safety = new InlineKeyboardButton();
         safety.setText("Безопасность");
-        safety.setCallbackData("safety");
         String linkSafety = "https://telegra.ph/Bezopasnost-05-26-2";
         safety.setUrl(linkSafety);
 

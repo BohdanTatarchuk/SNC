@@ -7,7 +7,7 @@ public class Main {
         TelegramBotsApi t = new TelegramBotsApi(DefaultBotSession.class);
         try {
             t.registerBot(new Bot());
-            System.out.println("Bot has been started");
+            System.out.println("BOT HAS BEEN STARTED");
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
