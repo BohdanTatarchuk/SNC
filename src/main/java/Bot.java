@@ -8,6 +8,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +33,6 @@ public class Bot extends TelegramLongPollingBot {
     public String getBotToken() {
         return botToken;
     }
-
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -139,9 +142,11 @@ public class Bot extends TelegramLongPollingBot {
             //creating obligatory field
             message.setChatId(update.getMessage().getChatId().toString());
             message.setText(update.getMessage().getText());
+            long chatID = Long.parseLong(message.getChatId());
             String text = update.getMessage().getText();
             System.out.println("User message: " + text);
-            System.out.println("Chat id: " + message.getChatId());
+            System.out.println("Chat id: " + chatID);
+            putInfo(chatID);
             System.out.println("============================================");
 
             //default commands
@@ -212,6 +217,28 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
+    //database stuff
+    private void putInfo(long chatId){
+        Connection conn = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+            conn = DriverManager.getConnection(
+                    "jdbc:postgresql://localhost:5432/snc_nft"
+                    , "postgres"
+                    , "12345678");
+
+            if (conn != null) {
+                System.out.println("Conn is OK!");
+            } else {
+                System.out.println("Conn failed!");
+            }
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("insert into callback (userid) values ("+chatId+")");
+            statement.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     //buttons language
     private InlineKeyboardMarkup getLanguageButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
