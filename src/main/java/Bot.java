@@ -8,10 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,9 +17,10 @@ public class Bot extends TelegramLongPollingBot {
     final static String botUsername = "snc_apexbot";
     final static String botToken = "5205088524:AAHzaUuDUrkaKIBpe5kcsbR-QI09sobhS_Y";
     SendMessage message = new SendMessage();
+    LinkedList<String> linkedList = new LinkedList<>();
+    Connection conn = null;
     Ukr ukr = new Ukr();
     Ru ru = new Ru();
-    LinkedList<String> linkedList = new LinkedList<>();
 
     @Override
     public String getBotUsername() {
@@ -142,12 +140,17 @@ public class Bot extends TelegramLongPollingBot {
             //creating obligatory field
             message.setChatId(update.getMessage().getChatId().toString());
             message.setText(update.getMessage().getText());
+
+            //getting current time for database
+            java.util.Date date = new java.util.Date();
             long chatID = Long.parseLong(message.getChatId());
+            putInfo(chatID, date);
+
+            //check
             String text = update.getMessage().getText();
             System.out.println("User message: " + text);
             System.out.println("Chat id: " + chatID);
-            putInfo(chatID);
-            System.out.println("============================================");
+            System.out.println("=====================");
 
             //default commands
             switch (text) {
@@ -218,8 +221,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     //database stuff
-    private void putInfo(long chatId){
-        Connection conn = null;
+    private void putInfo(long chatId, java.util.Date date){
         try {
             Class.forName("org.postgresql.Driver");
             conn = DriverManager.getConnection(
@@ -233,7 +235,11 @@ public class Bot extends TelegramLongPollingBot {
                 System.out.println("Conn failed!");
             }
             Statement statement = conn.createStatement();
-            statement.executeUpdate("insert into callback (userid) values ("+chatId+")");
+            ResultSet rs = statement.executeQuery("select chatid from info where chatid = "+chatId);
+            if(!rs.next()){
+                statement.executeUpdate(
+                        "insert into info (chatid, time) values (" +chatId+ ", " + "'" +date+ "')");
+            }
             statement.close();
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
