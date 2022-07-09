@@ -1,5 +1,9 @@
 import Languages.Ru;
 import Languages.Ukr;
+
+import org.slf4j.Logger;
+
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -9,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +24,8 @@ public class Bot extends TelegramLongPollingBot {
     SendMessage message = new SendMessage();
     LinkedList<String> linkedList = new LinkedList<>();
     Connection conn = null;
+
+    private static final Logger log = LoggerFactory.getLogger(Bot.class);
     Ukr ukr = new Ukr();
     Ru ru = new Ru();
 
@@ -42,8 +49,7 @@ public class Bot extends TelegramLongPollingBot {
             callbackQuery = update.getCallbackQuery();
             answer = callbackQuery.getData();
             linkedList.add(answer);
-            System.out.println("CallbackQuery: " + callbackQuery);
-            System.out.println("============================================");
+            log.info(String.valueOf(callbackQuery));
 
             //buttons actions
             switch (linkedList.getLast()) {
@@ -148,9 +154,10 @@ public class Bot extends TelegramLongPollingBot {
 
             //check
             String text = update.getMessage().getText();
-            System.out.println("User message: " + text);
-            System.out.println("Chat id: " + chatID);
-            System.out.println("=====================");
+            log.info("User message: " + text);
+            log.info("Chat id: " + chatID);
+            log.info("User message: " + text);
+
 
             //default commands
             switch (text) {
@@ -230,9 +237,9 @@ public class Bot extends TelegramLongPollingBot {
                     , "12345678");
 
             if (conn != null) {
-                System.out.println("Conn is OK!");
+                log.info("Connection is OK");
             } else {
-                System.out.println("Conn failed!");
+                log.info("Connection failed!");
             }
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("select chatid from info where chatid = "+chatId);
